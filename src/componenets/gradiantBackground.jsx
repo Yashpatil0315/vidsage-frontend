@@ -1,0 +1,101 @@
+import { useEffect, useRef } from "react";
+import { NeatGradient, NeatConfig } from "@firecms/neat";
+
+function GradientBackground() {
+    const canvasRef = useRef(null);
+    const gradientRef = useRef(null);
+
+    useEffect(() => {
+        if (!canvasRef.current) return;
+
+        gradientRef.current = new NeatGradient({
+            ref: canvasRef.current,
+            colors: [
+        {
+            color: '#FFFFFF',
+            enabled: true,
+        },
+        {
+            color: '#EFE2CE',
+            enabled: true,
+        },
+        {
+            color: '#D5ECEB',
+            enabled: true,
+        },
+        {
+            color: '#E4E4E4',
+            enabled: true,
+        },
+        {
+            color: '#F6FFFF',
+            enabled: true,
+        },
+    ],
+    speed: 15,
+    horizontalPressure: 4,
+    verticalPressure: 5,
+    waveFrequencyX: 5,
+    waveFrequencyY: 4,
+    waveAmplitude: 2,
+    shadows: 4,
+    highlights: 7,
+    colorBrightness: 1.05,
+    colorSaturation: 0,
+    wireframe: false,
+    colorBlending: 7,
+    backgroundColor: '#00A2FF',
+    backgroundAlpha: 1,
+    grainScale: 100,
+    grainSparsity: 0,
+    grainIntensity: 0.05,
+    grainSpeed: 0.3,
+    resolution: 0.5,
+    yOffset: 4216.799945831299,
+    yOffsetWaveMultiplier: 3.5,
+    yOffsetColorMultiplier: 3.5,
+    yOffsetFlowMultiplier: 3.5,
+    flowDistortionA: 0.4,
+    flowDistortionB: 3,
+    flowScale: 3.3,
+    flowEase: 0.53,
+    flowEnabled: true,
+    mouseDistortionStrength: 0.12,
+    mouseDistortionRadius: 0.25,
+    mouseDecayRate: 0.96,
+    mouseDarken: 0.24,
+    enableProceduralTexture: false,
+    textureVoidLikelihood: 0.06,
+    textureVoidWidthMin: 10,
+    textureVoidWidthMax: 500,
+    textureBandDensity: 0.8,
+    textureColorBlending: 0.06,
+    textureSeed: 333,
+    textureEase: 0.6,
+    proceduralBackgroundColor: '#003FFF',
+    textureShapeTriangles: 20,
+    textureShapeCircles: 15,
+    textureShapeBars: 15,
+    textureShapeSquiggles: 10,
+        });
+
+        return () => gradientRef.current?.destroy();
+    }, []);
+
+    return (
+        <canvas
+            ref={canvasRef}
+            style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                zIndex: -1,
+                pointerEvents: "none",
+            }}
+        />
+    );
+}
+
+export default GradientBackground;
