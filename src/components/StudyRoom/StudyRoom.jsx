@@ -85,7 +85,7 @@ export default function StudyRoom() {
       setMessages((prev) => [
         ...prev,
         {
-          from: data.user?.email || "Anonymous",
+          from: data.user?.name || "Anonymous",
           color: "bg-gray-200 text-gray-800",
           text: data.message,
           isMe: false,
