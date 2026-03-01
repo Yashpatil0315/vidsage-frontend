@@ -25,7 +25,7 @@ export default function Login() {
         password,
       });
 
-      router.push("/");
+      router.push("/dashbord");
     } catch (err) {
       setError(err.response?.data || "Login failed");
     } finally {
@@ -95,7 +95,7 @@ export default function Login() {
           <p className="mt-10 text-slate-500 text-sm">
             Don't have an account?{" "}
             <Link
-              href="/signup"
+              href="/register"
               className="text-[#6366F1] font-bold hover:underline"
             >
               Sign up
