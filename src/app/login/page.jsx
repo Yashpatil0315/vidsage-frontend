@@ -11,6 +11,7 @@ export default function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -66,17 +67,20 @@ export default function Login() {
               <label className="text-sm font-bold ml-1">Password</label>
               <div className="relative mt-2">
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
                   className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-[#6366F1] outline-none"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
-                <Eye
-                  size={18}
-                  className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300"
-                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none p-1 rounded-full transition-colors"
+                >
+                  <Eye size={18} />
+                </button>
               </div>
             </div>
 

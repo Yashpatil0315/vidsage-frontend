@@ -1,9 +1,24 @@
 "use client";
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Play, Sparkles, MessageCircle, PlayCircle, Send } from 'lucide-react';
+import api from '../lib/api';
 
 const LandingPage = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    // Automatically redirect to dashboard if the user is already logged in
+    api.get("/user/me")
+      .then(() => {
+        router.replace("/dashbord");
+      })
+      .catch(() => {
+        // Not authenticated, just stay on the landing page
+      });
+  }, [router]);
+
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
       {/* Navigation */}
@@ -36,16 +51,16 @@ const LandingPage = () => {
           </span>
           The Future of Collaborative Learning
         </div>
-        
+
         <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6">
           Learn Smarter, <br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-500">
             Together.
           </span>
         </h1>
-        
+
         <p className="max-w-2xl mx-auto text-lg text-slate-600 mb-10 leading-relaxed">
-          Transform educational videos into interactive learning experiences with AI-powered collaboration. 
+          Transform educational videos into interactive learning experiences with AI-powered collaboration.
           Upload, discuss, and master any subject.
         </p>
 
@@ -78,17 +93,17 @@ const LandingPage = () => {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
-          <FeatureCard 
+          <FeatureCard
             icon={<Sparkles className="text-indigo-600" />}
             title="AI Question Answering"
             desc="Instant answers to your toughest questions. Our AI understands video context."
           />
-          <FeatureCard 
+          <FeatureCard
             icon={<MessageCircle className="text-indigo-600" />}
             title="Collaborative Discussions"
             desc="Study with friends or join global study groups. Share timestamps and notes."
           />
-          <FeatureCard 
+          <FeatureCard
             icon={<PlayCircle className="text-indigo-600" />}
             title="Interactive Video Tools"
             desc="Interactive quizzes, dynamic chaptering, and automated summaries."

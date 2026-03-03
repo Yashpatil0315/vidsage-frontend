@@ -126,7 +126,13 @@ export default function Sidebar() {
 
                     {/* Navigation */}
                     <nav className="flex flex-col gap-1 px-3">
-                        <a href="#" className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 font-medium">
+                        <a
+                            href="/dashbord"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                window.location.href = "/dashbord";
+                            }}
+                            className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 font-medium">
                             <LayoutDashboard size={20} />
                             <span>Dashboard</span>
                         </a>

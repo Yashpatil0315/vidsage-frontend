@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Sparkles, Star, ArrowRight } from "lucide-react";
+import { Sparkles, Star, ArrowRight, Eye } from "lucide-react";
 import Link from "next/link";
 import api from "../../lib/api";
 
@@ -15,6 +15,7 @@ export default function SignUp() {
     password: "",
   });
 
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -35,7 +36,7 @@ export default function SignUp() {
 
   return (
     <div className="flex min-h-screen bg-white font-sans text-slate-900">
-      
+
       {/* LEFT SIDE */}
       <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-[#F5F3FF] via-[#F8F7FF] to-white p-16 flex-col justify-between">
 
@@ -116,16 +117,25 @@ export default function SignUp() {
               <label className="block text-sm font-bold mb-2">
                 Password
               </label>
-              <input
-                type="password"
-                placeholder="••••••••"
-                value={form.password}
-                onChange={(e) =>
-                  setForm({ ...form, password: e.target.value })
-                }
-                required
-                className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-[#6366F1] outline-none"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  value={form.password}
+                  onChange={(e) =>
+                    setForm({ ...form, password: e.target.value })
+                  }
+                  required
+                  className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-[#6366F1] outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none p-1 rounded-full transition-colors"
+                >
+                  <Eye size={18} />
+                </button>
+              </div>
             </div>
 
             {error && (
