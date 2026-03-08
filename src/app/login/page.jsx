@@ -35,18 +35,18 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F8F9FE] flex items-center justify-center p-6">
-      <div className="w-full max-w-[500px] bg-white p-12 rounded-[40px] shadow-2xl shadow-indigo-100">
+    <div className="min-h-screen bg-[#F8F9FE] flex items-center justify-center p-4 md:p-6">
+      <div className="w-full max-w-[500px] bg-white p-6 sm:p-8 md:p-12 rounded-[24px] sm:rounded-[32px] md:rounded-[40px] shadow-2xl shadow-indigo-100">
         <div className="flex flex-col items-center">
-          <div className="flex items-center gap-3 mb-10">
-            <div className="w-12 h-12 bg-[#6366F1] rounded-2xl flex items-center justify-center shadow-lg">
-              <Sparkles className="text-white w-7 h-7" />
+          <div className="flex items-center gap-2 sm:gap-3 mb-6 sm:mb-10">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#6366F1] rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg">
+              <Sparkles className="text-white w-5 h-5 sm:w-7 sm:h-7" />
             </div>
-            <span className="font-bold text-3xl">Vidsage</span>
+            <span className="font-bold text-2xl sm:text-3xl">Vidsage</span>
           </div>
 
-          <h2 className="text-3xl font-extrabold mb-2">Welcome back</h2>
-          <p className="text-slate-500 mb-10">
+          <h2 className="text-2xl sm:text-3xl font-extrabold mb-2">Welcome back</h2>
+          <p className="text-slate-500 mb-6 sm:mb-10 text-sm sm:text-base">
             Continue your learning journey
           </p>
 

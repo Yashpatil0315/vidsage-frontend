@@ -34,23 +34,23 @@ body {
   :root {
     --background: #fdfdfd;
     --foreground: #1e1e24;
-    
+
     --sidebar-bg: #ffffff;
     --sidebar-border: #f0f0f4;
-    
+
     --primary: #6554c0;
     --primary-hover: #5444a5;
-    
+
     --accent-blue: #eaebfa;
     --accent-blue-text: #6554c0;
-    
+
     --text-muted: #8b8e98;
-    
+
     --card-bg: #ffffff;
     --card-border: #f0f0f4;
     --input-bg: #f9fafb;
     --input-border: #e5e7eb;
-    
+
     --radius: 0.75rem;
     --radius-lg: 1rem;
     --radius-full: 9999px;
@@ -60,18 +60,18 @@ body {
   .dark {
     --background: #000000;
     --foreground: #ffffff;
-    
+
     --sidebar-bg: #09090b;
     --sidebar-border: #27272a;
-    
+
     --primary: #818cf8;
     --primary-hover: #6366f1;
-    
+
     --accent-blue: #1e1b4b;
     --accent-blue-text: #e0e7ff;
-    
+
     --text-muted: #a1a1aa;
-    
+
     --card-bg: #09090b;
     --card-border: #27272a;
     --input-bg: #18181b;
@@ -137,7 +137,13 @@ body {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+
+  /* Safe area for iOS home indicator / notch */
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 }

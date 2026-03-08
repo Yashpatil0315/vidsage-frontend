@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { Play, Bot, Users } from "lucide-react";
 import api from "../../lib/api";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import TopBar from "../../components/TopBar/TopBar";
@@ -16,32 +17,37 @@ export default function Home() {
   const router = useRouter();
 
   // ── Auth guard ──
-  // Check if the user is logged in by calling /user/me.
-  // The backend will validate the session cookie and return user data
-  // or a 401 if not authenticated → redirect to /login.
   const [authChecking, setAuthChecking] = useState(true);
 
   useEffect(() => {
     api.get("/user/me")
       .then(() => {
-        // Cookie is valid — user is authenticated
         setAuthChecking(false);
       })
       .catch(() => {
-        // No valid session — send them to login
         router.replace("/login");
       });
   }, [router]);
 
-  // If there's a jobId in the URL, show content immediately (shared link)
   const jobIdFromUrl = searchParams.get("jobId");
-  const [hasVideo, setHasVideo] = useState(!!jobIdFromUrl);
-  const [jobId, setJobId] = useState(jobIdFromUrl || null);
+
+  // Restore jobId from sessionStorage if not in URL (e.g., user navigated to /notes and came back)
+  const savedJobId = typeof window !== "undefined" ? sessionStorage.getItem("vidsage_active_jobId") : null;
+  const initialJobId = jobIdFromUrl || savedJobId || null;
+  const [hasVideo, setHasVideo] = useState(!!initialJobId);
+  const [jobId, setJobId] = useState(initialJobId);
+
+  // If we restored from sessionStorage but URL doesn't have jobId, fix the URL
+  useEffect(() => {
+    if (!jobIdFromUrl && initialJobId) {
+      router.replace(`/dashbord?jobId=${initialJobId}`);
+    }
+  }, [jobIdFromUrl, initialJobId, router]);
 
   const handleVideoProcessed = (url, newJobId) => {
     setJobId(newJobId);
     setHasVideo(true);
-    // Update the URL with the jobId so it becomes shareable and child components can access it
+    sessionStorage.setItem("vidsage_active_jobId", newJobId);
     router.replace(`/dashbord?jobId=${newJobId}`);
   };
   const [showErrorToast, setShowErrorToast] = useState(false);
@@ -49,12 +55,42 @@ export default function Home() {
   const handleJobNotFound = () => {
     setHasVideo(false);
     setJobId(null);
+    sessionStorage.removeItem("vidsage_active_jobId");
     setShowErrorToast(true);
     router.replace("/dashbord");
-
-    // Auto-hide the toast after 4 seconds
     setTimeout(() => setShowErrorToast(false), 4000);
   };
+
+  const handleExitVideo = () => {
+    setHasVideo(false);
+    setJobId(null);
+    sessionStorage.removeItem("vidsage_active_jobId");
+    router.replace("/dashbord");
+  };
+
+  // ── Mobile tab state ──
+  // On mobile, only one panel is visible at a time (Video, AI Chat, or Study Room)
+  // On desktop (lg:), all three are visible simultaneously via the ResizableSidebar
+  const [mobileTab, setMobileTab] = useState("video");
+
+  // ── AI Chat messages (lifted here so they persist across tab switches & screen resizes) ──
+  const [aiMessages, setAiMessages] = useState(() => {
+    const defaultMsg = [{ from: "ai", text: "Hello! I'm your AI tutor. I'm tracking the video context. Feel free to ask me anything about the lesson.", time: "Just now" }];
+    if (typeof window === "undefined" || !initialJobId) return defaultMsg;
+    try {
+      const saved = sessionStorage.getItem(`vidsage_ai_msgs_${initialJobId}`);
+      return saved ? JSON.parse(saved) : defaultMsg;
+    } catch {
+      return defaultMsg;
+    }
+  });
+
+  // Save AI messages to sessionStorage whenever they change
+  useEffect(() => {
+    if (jobId) {
+      sessionStorage.setItem(`vidsage_ai_msgs_${jobId}`, JSON.stringify(aiMessages));
+    }
+  }, [aiMessages, jobId]);
 
   // Show a loading spinner while we verify the session
   if (authChecking) {
@@ -75,22 +111,78 @@ export default function Home() {
     <div className="flex h-screen w-full bg-background overflow-hidden font-sans relative">
       <Sidebar />
       <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        <TopBar />
+        <TopBar onExitVideo={hasVideo ? handleExitVideo : null} />
         <div className="flex-1 flex flex-row overflow-hidden relative bg-gray-50/50 dark:bg-[#0f1117]">
 
           {!hasVideo ? (
             <UrlAccepter onSubmit={handleVideoProcessed} />
           ) : (
             <>
-              <MainContent onNotFound={handleJobNotFound} />
+              {/* === DESKTOP LAYOUT (lg: and up) === */}
+              {/* MainContent is always visible on desktop */}
+              <div className="hidden lg:flex flex-1 flex-col overflow-hidden">
+                <MainContent onNotFound={handleJobNotFound} />
+              </div>
               <ResizableSidebar>
                 <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
-                  <AiChatBox />
+                  <AiChatBox messages={aiMessages} setMessages={setAiMessages} />
                 </div>
                 <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
                   <StudyRoom />
                 </div>
               </ResizableSidebar>
+
+              {/* === MOBILE LAYOUT (below lg:) === */}
+              {/* Show the active tab's content */}
+              <div className="flex lg:hidden flex-1 flex-col overflow-hidden pb-16">
+                {mobileTab === "video" && (
+                  <MainContent onNotFound={handleJobNotFound} />
+                )}
+                {mobileTab === "chat" && (
+                  <div className="flex-1 flex flex-col p-3 overflow-hidden">
+                    <AiChatBox messages={aiMessages} setMessages={setAiMessages} />
+                  </div>
+                )}
+                {mobileTab === "study" && (
+                  <div className="flex-1 flex flex-col p-3 overflow-hidden">
+                    <StudyRoom />
+                  </div>
+                )}
+              </div>
+
+              {/* === MOBILE BOTTOM TAB BAR === */}
+              <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-[#16181d] border-t border-gray-200 dark:border-gray-800 flex items-center justify-around py-2 z-40 safe-bottom">
+                <button
+                  onClick={() => setMobileTab("video")}
+                  className={`flex flex-col items-center gap-0.5 px-4 py-1.5 rounded-lg transition-colors ${mobileTab === "video"
+                    ? "text-indigo-600 dark:text-indigo-400"
+                    : "text-gray-400 dark:text-gray-500"
+                    }`}
+                >
+                  <Play size={20} className={mobileTab === "video" ? "fill-current" : ""} />
+                  <span className="text-[10px] font-semibold">Video</span>
+                </button>
+                <button
+                  onClick={() => setMobileTab("chat")}
+                  className={`flex flex-col items-center gap-0.5 px-4 py-1.5 rounded-lg transition-colors ${mobileTab === "chat"
+                    ? "text-indigo-600 dark:text-indigo-400"
+                    : "text-gray-400 dark:text-gray-500"
+                    }`}
+                >
+                  <Bot size={20} />
+                  <span className="text-[10px] font-semibold">AI Chat</span>
+                </button>
+                <button
+                  onClick={() => setMobileTab("study")}
+                  className={`flex flex-col items-center gap-0.5 px-4 py-1.5 rounded-lg transition-colors ${mobileTab === "study"
+                    ? "text-indigo-600 dark:text-indigo-400"
+                    : "text-gray-400 dark:text-gray-500"
+                    }`}
+                >
+                  <Users size={20} />
+                  <span className="text-[10px] font-semibold">Study Room</span>
+                </button>
+              </div>
             </>
           )}
 
@@ -99,7 +191,7 @@ export default function Home() {
 
       {/* Error Toast Notification */}
       <div
-        className={`fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-3.5 bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl transition-all duration-300 transform ${showErrorToast ? "translate-y-0 opacity-100 scale-100" : "translate-y-12 opacity-0 scale-95 pointer-events-none"
+        className={`fixed bottom-20 lg:bottom-8 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-3.5 bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl transition-all duration-300 transform ${showErrorToast ? "translate-y-0 opacity-100 scale-100" : "translate-y-12 opacity-0 scale-95 pointer-events-none"
           }`}
       >
         <div className="bg-red-500/20 text-red-400 p-1.5 rounded-full">
@@ -118,3 +210,4 @@ export default function Home() {
     </div>
   );
 }
+

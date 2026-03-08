@@ -33,7 +33,7 @@ export default function ResizableSidebar({ children }) {
 
     return (
         <div
-            className="relative flex-shrink-0 bg-slate-50/50 shadow-[-4px_0_15px_rgba(0,0,0,0.02)] flex flex-col h-full border-l border-gray-200/60"
+            className="relative flex-shrink-0 bg-slate-50/50 shadow-[-4px_0_15px_rgba(0,0,0,0.02)] hidden lg:flex flex-col h-full border-l border-gray-200/60"
             style={{ width }}
         >
             {/* Draggable Handle */}
@@ -55,3 +55,4 @@ export default function ResizableSidebar({ children }) {
         </div>
     );
 }
+

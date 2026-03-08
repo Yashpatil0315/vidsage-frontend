@@ -3,13 +3,18 @@ import { useState, useEffect, useRef } from "react";
 import api from "../../lib/api";
 import { useSearchParams } from "next/navigation";
 
-export default function AIChatBox() {
+export default function AIChatBox({ messages, setMessages }) {
 
   const searchParams = useSearchParams();
   const jobId = searchParams.get("jobId");
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(true);
   const intervalRef = useRef(null);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    api.get("/user/me").then(res => setUser(res.data.user)).catch(console.error);
+  }, []);
 
   useEffect(() => {
     if (!jobId) return;
@@ -62,9 +67,7 @@ export default function AIChatBox() {
 
 
 
-  const [messages, setMessages] = useState([
-    { from: "ai", text: "Hello! I'm your AI tutor. I'm tracking the video context. Feel free to ask me anything about the lesson.", time: "Just now" },
-  ]);
+  // messages & setMessages are now received from the parent to persist across tab switches and screen resizes
 
   return (
     <>
@@ -94,7 +97,11 @@ export default function AIChatBox() {
                   <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">AI</div>
                 )}
                 {m.from === "user" && (
-                  <div className="w-7 h-7 rounded-full bg-amber-300 flex items-center justify-center text-amber-800 font-bold text-xs flex-shrink-0">A</div>
+                  <img
+                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || "User")}&background=fcd34d&color=92400e&rounded=true`}
+                    alt="User"
+                    className="w-7 h-7 rounded-full flex-shrink-0"
+                  />
                 )}
                 <div className={`max-w-[78%] ${m.from === "user" ? "items-end" : "items-start"} flex flex-col gap-0.5`}>
                   <div className={`px-3 py-2.5 rounded-2xl text-sm leading-relaxed ${m.from === "ai"
@@ -117,6 +124,7 @@ export default function AIChatBox() {
               <input
                 value={input}
                 onChange={e => setInput(e.target.value)}
+                onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
                 className="flex-1 bg-transparent text-sm text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 outline-none"
                 placeholder="Ask AI about the video..."
               />

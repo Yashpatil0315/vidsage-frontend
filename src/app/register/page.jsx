@@ -67,11 +67,11 @@ export default function SignUp() {
       </div>
 
       {/* RIGHT SIDE */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
-        <div className="w-full max-w-md space-y-8">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 md:p-8">
+        <div className="w-full max-w-md space-y-5 sm:space-y-8">
 
           <div className="text-center">
-            <h2 className="text-4xl font-extrabold mb-2">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-2">
               Create an account
             </h2>
             <p className="text-slate-500">

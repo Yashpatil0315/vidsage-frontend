@@ -2,6 +2,7 @@
 import { useSearchParams } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { io } from "socket.io-client";
+import api from "../../lib/api";
 
 const SOCKET_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
@@ -10,10 +11,29 @@ export default function StudyRoom() {
   const searchParams = useSearchParams();
   const jobId = searchParams.get("jobId");
   const [msg, setMsg] = useState("");
+  const [user, setUser] = useState(null);
 
-  // ✅ FIX 1: Start with empty messages — no fake/hardcoded ones.
-  // Real messages will come in via socket events.
-  const [messages, setMessages] = useState([]);
+  useEffect(() => {
+    api.get("/user/me").then(res => setUser(res.data.user)).catch(console.error);
+  }, []);
+
+  // ✅ FIX 1: Initialize messages from sessionStorage to allow cross-page persistence
+  const [messages, setMessages] = useState(() => {
+    if (typeof window === "undefined" || !jobId) return [];
+    try {
+      const saved = sessionStorage.getItem(`vidsage_socket_msgs_${jobId}`);
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  // Save messages to sessionStorage whenever they change
+  useEffect(() => {
+    if (jobId && messages.length > 0) {
+      sessionStorage.setItem(`vidsage_socket_msgs_${jobId}`, JSON.stringify(messages));
+    }
+  }, [messages, jobId]);
 
   const [isConnected, setIsConnected] = useState(false);
   const [onlineCount, setOnlineCount] = useState(0);
@@ -40,7 +60,15 @@ export default function StudyRoom() {
     // would be pointless and could cause errors on the backend.
     if (!jobId) return;
 
-    const socket = io(SOCKET_URL, {
+    // Dynamically determine socket URL (localhost vs network IP)
+    const getSocketUrl = () => {
+      if (typeof window !== "undefined") {
+        return `${window.location.protocol}//${window.location.hostname}:3001`;
+      }
+      return process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+    };
+
+    const socket = io(getSocketUrl(), {
       transports: ["websocket", "polling"],
       autoConnect: true,
       withCredentials: true,
@@ -158,7 +186,26 @@ export default function StudyRoom() {
   const handleInvite = async () => {
     const shareUrl = `${window.location.origin}/dashbord?jobId=${jobId}`;
     try {
-      await navigator.clipboard.writeText(shareUrl);
+      // Modern secure contexts (localhost or HTTPS)
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(shareUrl);
+      } else {
+        // Fallback for insecure contexts (HTTP on local network)
+        const textArea = document.createElement("textarea");
+        textArea.value = shareUrl;
+        // Move outside of screen to make it invisible
+        textArea.style.position = "absolute";
+        textArea.style.left = "-999999px";
+        document.body.prepend(textArea);
+        textArea.select();
+        try {
+          document.execCommand('copy');
+        } catch (error) {
+          console.error("Fallback copy failed", error);
+        } finally {
+          textArea.remove();
+        }
+      }
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
@@ -203,20 +250,26 @@ export default function StudyRoom() {
             <p className="text-sm text-gray-400 dark:text-gray-500">No messages yet. Start the conversation!</p>
           </div>
         )}
-        {messages.map((m, i) => (
-          <div key={i} className={`flex gap-2 ${m.isMe ? "flex-row-reverse" : ""}`}>
-            <div className={`w-7 h-7 rounded-full ${m.color.replace('bg-gray-200 text-gray-800', 'bg-gray-200 dark:bg-zinc-800 text-gray-800 dark:text-gray-200')} flex items-center justify-center font-bold text-[10px] flex-shrink-0`}>
-              {m.from[0]}
-            </div>
-            <div className={`flex flex-col gap-0.5 max-w-[82%] ${m.isMe ? "items-end" : ""}`}>
-              {!m.isMe && <span className="text-[11px] font-semibold text-gray-500 dark:text-gray-400 px-1">{m.from}</span>}
-              <div className={`px-3 py-2 rounded-2xl text-sm leading-relaxed ${m.isMe ? "bg-indigo-50 dark:bg-indigo-600 text-indigo-900 dark:text-white" : "bg-gray-50 dark:bg-zinc-900 text-gray-800 dark:text-gray-200"
-                }`}>
-                {m.text}
+        {messages.map((m, i) => {
+          const isMe = m.isMe || m.from === "You";
+          const displayName = isMe ? (user?.name || "User") : (m.from || "Anonymous");
+          return (
+            <div key={i} className={`flex gap-2 ${m.isMe ? "flex-row-reverse" : ""}`}>
+              <img
+                src={`https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=${isMe ? 'c7d2fe' : 'e5e7eb'}&color=${isMe ? '3730a3' : '1f2937'}&rounded=true`}
+                alt={displayName}
+                className="w-7 h-7 rounded-full flex-shrink-0"
+              />
+              <div className={`flex flex-col gap-0.5 max-w-[82%] ${m.isMe ? "items-end" : ""}`}>
+                {!m.isMe && <span className="text-[11px] font-semibold text-gray-500 dark:text-gray-400 px-1">{m.from}</span>}
+                <div className={`px-3 py-2 rounded-2xl text-sm leading-relaxed ${m.isMe ? "bg-indigo-50 dark:bg-indigo-600 text-indigo-900 dark:text-white" : "bg-gray-50 dark:bg-zinc-900 text-gray-800 dark:text-gray-200"
+                  }`}>
+                  {m.text}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
         <div ref={messagesEndRef} />
       </div>
 

@@ -62,14 +62,14 @@ export default function MainContent({ onNotFound }) {
     }, [jobId, onNotFound]);
 
     return (
-        <main className="flex-1 flex flex-col p-8 overflow-y-auto scrollbar-hide">
+        <main className="flex-1 flex flex-col p-4 md:p-8 overflow-y-auto scrollbar-hide">
 
             {/* Header Section */}
-            <div className="flex justify-between items-start mb-6 w-full max-w-5xl mx-auto">
-                <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white leading-tight flex-1">
+            <div className="flex flex-col md:flex-row justify-between items-start gap-3 md:gap-0 mb-4 md:mb-6 w-full max-w-5xl mx-auto">
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white leading-tight flex-1">
                     Neural Networks: Backpropagation Explained
                 </h1>
-                <div className="flex items-center gap-3 ml-6 self-start">
+                <div className="flex items-center gap-2 sm:gap-3 md:ml-6 self-start w-full md:w-auto">
                     <button className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-[#09090b] border border-gray-200 dark:border-white/10 rounded-lg text-gray-700 dark:text-gray-300 font-semibold shadow-sm hover:bg-gray-50 dark:hover:bg-white/5 hover:border-gray-300 dark:hover:border-white/20 hover:text-gray-900 dark:hover:text-white transition-all">
                         <Share2 size={16} />
                         Share
@@ -109,10 +109,10 @@ export default function MainContent({ onNotFound }) {
             </div>
 
             {/* Content Tabs Section */}
-            <div className="w-full max-w-5xl mx-auto bg-white dark:bg-[#09090b] rounded-2xl border border-gray-100 dark:border-white/10 p-8 shadow-sm">
+            <div className="w-full max-w-5xl mx-auto bg-white dark:bg-[#09090b] rounded-2xl border border-gray-100 dark:border-white/10 p-4 sm:p-6 md:p-8 shadow-sm">
 
                 {/* Tabs */}
-                <div className="flex items-center gap-8 border-b border-gray-100 dark:border-white/10 mb-8 pb-[-1px]">
+                <div className="flex items-center gap-4 sm:gap-6 md:gap-8 border-b border-gray-100 dark:border-white/10 mb-4 sm:mb-6 md:mb-8 pb-[-1px] overflow-x-auto">
                     <button className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-bold border-b-2 border-indigo-600 dark:border-indigo-400 pb-4 px-2 -mb-[2px] z-10">
                         <FileText size={18} />
                         Overview
