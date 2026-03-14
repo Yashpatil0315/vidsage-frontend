@@ -51,10 +51,10 @@ export default function TopBar({ onExitVideo }) {
                 )}
 
                 {/* Notification Bell */}
-                <button className="relative p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950 rounded-full transition-colors">
+                {/* <button className="relative p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950 rounded-full transition-colors">
                     <Bell size={20} className="fill-current" />
                     <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full border-2 border-white dark:border-[#16181d]"></span>
-                </button>
+                </button> */}
 
                 {/* User Profile Dropdown */}
                 <div className="flex items-center gap-3 cursor-pointer pl-5 border-l border-gray-100 dark:border-gray-800">
