@@ -19,15 +19,24 @@ export default function Home() {
   // ── Auth guard ──
   const [authChecking, setAuthChecking] = useState(true);
 
-  useEffect(() => {
-    api.get("/user/me")
-      .then(() => {
-        setAuthChecking(false);
-      })
-      .catch(() => {
-        router.replace("/login");
-      });
-  }, [router]);
+// useEffect(() => {
+//   api.get("/user/me", {
+//     headers: {
+//       "Authorization": `Bearer ${localStorage.getItem("vidsage_token")}`
+//     }
+//   })
+//   .then(() => {
+//     setAuthChecking(false);
+//   })
+//   .catch(() => {
+//     router.replace("/login");
+//   });
+// }, [router]);
+useEffect(() => {
+  api.get("/user/me") // cookie sent automatically
+    .then(() => setAuthChecking(false))
+    .catch(() => router.replace("/login"));
+}, [router]);
 
   const jobIdFromUrl = searchParams.get("jobId");
 

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { io } from "socket.io-client";
 import api from "../../lib/api";
 
-const SOCKET_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+const SOCKET_URL = process.env.NEXT_PUBLIC_API_URL || "http://13.206.27.99:3001";
 
 export default function StudyRoom() {
 
@@ -60,18 +60,23 @@ export default function StudyRoom() {
     // would be pointless and could cause errors on the backend.
     if (!jobId) return;
 
-    // Dynamically determine socket URL (localhost vs network IP)
     const getSocketUrl = () => {
+      if (process.env.NEXT_PUBLIC_API_URL) {
+        return process.env.NEXT_PUBLIC_API_URL;
+      }
       if (typeof window !== "undefined") {
         return `${window.location.protocol}//${window.location.hostname}:3001`;
       }
-      return process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+      return "http://localhost:3001";
     };
 
     const socket = io(getSocketUrl(), {
       transports: ["websocket", "polling"],
       autoConnect: true,
-      withCredentials: true,
+      withCredentials: false,
+      auth: {
+        token: typeof window !== "undefined" ? localStorage.getItem("vidsage_token") : null
+      }
     });
     socketRef.current = socket;
 

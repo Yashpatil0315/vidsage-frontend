@@ -15,24 +15,21 @@ export default function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+ async function handleSubmit(e) {
+  e.preventDefault();
+  setError("");
+  setLoading(true);
 
-    try {
-      await api.post("/user/login", {
-        email,
-        password,
-      });
-
-      router.push("/dashbord");
-    } catch (err) {
-      setError(err.response?.data || "Login failed");
-    } finally {
-      setLoading(false);
-    }
+  try {
+    const res = await api.post("/user/login", { email, password });
+localStorage.setItem("vidsage_token", res.data.token);
+router.push("/dashbord");
+  } catch (err) {
+    setError(err.response?.data || "Login failed");
+  } finally {
+    setLoading(false);
   }
+}
 
   return (
     <div className="min-h-screen bg-[#F8F9FE] flex items-center justify-center p-4 md:p-6">
