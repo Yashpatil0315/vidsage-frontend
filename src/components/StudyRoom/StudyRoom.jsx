@@ -71,7 +71,7 @@ export default function StudyRoom() {
     };
 
     const socket = io(getSocketUrl(), {
-      transports: ["websocket", "polling"],
+      transports: ["polling","websocket"],
       autoConnect: true,
       withCredentials: false,
       auth: {
