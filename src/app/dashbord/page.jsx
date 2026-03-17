@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Play, Bot, Users } from "lucide-react";
+import { Play, Bot, Users, ChevronDown } from "lucide-react";
 import api from "../../lib/api";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import TopBar from "../../components/TopBar/TopBar";
@@ -81,6 +81,8 @@ useEffect(() => {
   // On mobile, only one panel is visible at a time (Video, AI Chat, or Study Room)
   // On desktop (lg:), all three are visible simultaneously via the ResizableSidebar
   const [mobileTab, setMobileTab] = useState("video");
+  const [chatCollapsed, setChatCollapsed] = useState(false);
+  const [roomCollapsed, setRoomCollapsed] = useState(false);
 
   // ── AI Chat messages (lifted here so they persist across tab switches & screen resizes) ──
   const [aiMessages, setAiMessages] = useState(() => {
@@ -133,11 +135,44 @@ useEffect(() => {
                 <MainContent onNotFound={handleJobNotFound} />
               </div>
               <ResizableSidebar>
-                <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
-                  <AiChatBox messages={aiMessages} setMessages={setAiMessages} />
+                {/* AI Chat Panel */}
+                <div className={`flex flex-col min-h-0 overflow-hidden transition-all duration-300 ${chatCollapsed ? "flex-none" : "flex-1"}`}>
+                  <button
+                    onClick={() => setChatCollapsed(!chatCollapsed)}
+                    className="flex items-center justify-between px-3 py-2 bg-white dark:bg-[#16181d] border border-gray-100 dark:border-gray-800 rounded-xl mb-1 hover:shadow-sm transition-all flex-shrink-0"
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-lg bg-indigo-600 flex items-center justify-center text-white text-[10px] font-bold">AI</div>
+                      <span className="text-xs font-bold text-gray-900 dark:text-white">AI Tutor</span>
+                    </div>
+                    <ChevronDown size={16} className={`text-gray-400 transition-transform duration-300 ${chatCollapsed ? "" : "rotate-180"}`} />
+                  </button>
+                  {!chatCollapsed && (
+                    <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+                      <AiChatBox messages={aiMessages} setMessages={setAiMessages} />
+                    </div>
+                  )}
                 </div>
-                <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
-                  <StudyRoom />
+
+                {/* Study Room Panel */}
+                <div className={`flex flex-col min-h-0 overflow-hidden transition-all duration-300 ${roomCollapsed ? "flex-none" : "flex-1"}`}>
+                  <button
+                    onClick={() => setRoomCollapsed(!roomCollapsed)}
+                    className="flex items-center justify-between px-3 py-2 bg-white dark:bg-[#16181d] border border-gray-100 dark:border-gray-800 rounded-xl mb-1 hover:shadow-sm transition-all flex-shrink-0"
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-lg bg-emerald-600 flex items-center justify-center">
+                        <Users size={12} className="text-white" />
+                      </div>
+                      <span className="text-xs font-bold text-gray-900 dark:text-white">Study Room</span>
+                    </div>
+                    <ChevronDown size={16} className={`text-gray-400 transition-transform duration-300 ${roomCollapsed ? "" : "rotate-180"}`} />
+                  </button>
+                  {!roomCollapsed && (
+                    <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+                      <StudyRoom />
+                    </div>
+                  )}
                 </div>
               </ResizableSidebar>
 

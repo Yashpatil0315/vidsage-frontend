@@ -220,29 +220,16 @@ export default function StudyRoom() {
 
   return (
     <div className="flex flex-col h-full bg-white dark:bg-[#09090b] rounded-2xl border border-gray-100 dark:border-white/10 overflow-hidden">
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-white/10">
-        <div className="flex items-center gap-3">
-          {/* <div className="flex -space-x-1.5">
-            {["bg-amber-300", "bg-orange-300", "bg-rose-300", "bg-sky-300"].map((c, i) => (
-              <div key={i} className={`w-7 h-7 rounded-full ${c} border-2 border-white dark:border-[#09090b]`} />
-            ))}
-            <div className="w-7 h-7 rounded-full bg-gray-200 dark:bg-zinc-800 border-2 border-white dark:border-[#09090b] flex items-center justify-center text-[10px] text-gray-500 dark:text-gray-400 font-semibold">
-              {onlineCount > 0 ? `+${onlineCount}` : "+4"}
-            </div>
-          </div> */}
-          <div>
-            <div className="font-semibold text-gray-900 dark:text-white text-sm flex items-center gap-1.5">
-              Study Room
-              <span className={`inline-block w-2 h-2 rounded-full ${isConnected ? "bg-green-400" : "bg-red-400"}`} title={isConnected ? "Connected" : "Disconnected"} />
-            </div>
-          </div>
-        </div>
 
-        {/* ✅ FIX 7 continued: Invite button with copy-to-clipboard + "Copied!" feedback */}
+      {/* Invite bar */}
+      <div className="flex items-center justify-between px-4 py-2 border-b border-gray-100 dark:border-white/10">
+        <div className="flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500">
+          <span className={`inline-block w-2 h-2 rounded-full ${isConnected ? "bg-green-400" : "bg-red-400"}`} />
+          {isConnected ? "Connected" : "Disconnected"}
+        </div>
         <button
           onClick={handleInvite}
-          className="text-indigo-600 dark:text-indigo-400 text-xs font-semibold hover:text-indigo-700 dark:hover:text-indigo-300 px-2 py-1 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/50 transition-all"
+          className="text-indigo-600 dark:text-indigo-400 text-xs font-semibold hover:text-indigo-700 dark:hover:text-indigo-300 px-2 py-0.5 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/50 transition-all"
         >
           {copied ? "Copied!" : "Invite"}
         </button>

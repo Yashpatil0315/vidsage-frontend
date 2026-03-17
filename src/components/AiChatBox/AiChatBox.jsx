@@ -1,9 +1,11 @@
 "use client"
 import { useState, useEffect, useRef } from "react";
+import { Copy, Check } from "lucide-react";
 import api from "../../lib/api";
 import { useSearchParams } from "next/navigation";
 
 export default function AIChatBox({ messages, setMessages }) {
+  const [copiedIndex, setCopiedIndex] = useState(null);
 
   const searchParams = useSearchParams();
   const jobId = searchParams.get("jobId");
@@ -73,21 +75,6 @@ export default function AIChatBox({ messages, setMessages }) {
     <>
       {!loading ? (
         <div className="flex flex-col bg-white dark:bg-[#09090b] rounded-2xl border border-gray-100 dark:border-white/10 overflow-hidden h-full">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-white/10">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white text-xs font-bold">AI</div>
-              <div>
-                <div className="font-semibold text-gray-900 dark:text-white text-sm">AI Tutor</div>
-                <div className="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500">
-                  <span className="w-1.5 h-1.5 bg-green-400 rounded-full inline-block" />
-                  Online • Context Aware
-                </div>
-              </div>
-            </div>
-            <button className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5" /><circle cx="12" cy="12" r="1.5" /><circle cx="19" cy="12" r="1.5" /></svg>
-            </button>
-          </div>
 
           {/* Messages */}
           <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3 min-h-0">
@@ -112,7 +99,27 @@ export default function AIChatBox({ messages, setMessages }) {
                       <span>{m.text}<strong>{m.bold}</strong>{m.after}</span>
                     ) : m.text}
                   </div>
-                  {m.time && <span className="text-[10px] text-gray-400 dark:text-gray-500 px-1">{m.time}</span>}
+                  <div className="flex items-center gap-1.5 px-1">
+                    {m.time && <span className="text-[10px] text-gray-400 dark:text-gray-500">{m.time}</span>}
+                    {m.from === "ai" && (
+                      <button
+                        onClick={() => {
+                          const plainText = typeof m.text === "string" ? m.text : (m.text?.toString() || "");
+                          navigator.clipboard.writeText(plainText);
+                          setCopiedIndex(i);
+                          setTimeout(() => setCopiedIndex(null), 2000);
+                        }}
+                        className="flex items-center gap-1 px-1.5 py-0.5 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
+                        title="Copy response"
+                      >
+                        {copiedIndex === i ? (
+                          <><Check size={12} className="text-green-500" /><span className="text-[10px] text-green-500 font-medium">Copied</span></>
+                        ) : (
+                          <><Copy size={12} /><span className="text-[10px]">Copy</span></>
+                        )}
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}

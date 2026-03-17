@@ -4,7 +4,6 @@ import { useRouter, usePathname } from "next/navigation";
 import api from "../../lib/api";
 import {
     LayoutDashboard,
-    FileText,
     Moon,
     Sun,
     LogOut,
@@ -137,20 +136,6 @@ export default function Sidebar() {
                                 }`}>
                             <LayoutDashboard size={20} />
                             <span>Dashboard</span>
-                        </a>
-                        <a
-                            href="/notes"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                router.push("/notes");
-                                setOpen(false);
-                            }}
-                            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition-colors ${pathname === "/notes"
-                                ? "bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400"
-                                : "text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white"
-                                }`}>
-                            <FileText size={20} />
-                            <span>Notes</span>
                         </a>
                     </nav>
                 </div>
