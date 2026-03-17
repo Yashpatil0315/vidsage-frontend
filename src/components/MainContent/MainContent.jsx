@@ -64,23 +64,6 @@ export default function MainContent({ onNotFound }) {
     return (
         <main className="flex-1 flex flex-col p-4 md:p-8 overflow-y-auto scrollbar-hide">
 
-            {/* Header Section */}
-            <div className="flex flex-col md:flex-row justify-between items-start gap-3 md:gap-0 mb-4 md:mb-6 w-full max-w-5xl mx-auto">
-                <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white leading-tight flex-1">
-                    Neural Networks: Backpropagation Explained
-                </h1>
-                <div className="flex items-center gap-2 sm:gap-3 md:ml-6 self-start w-full md:w-auto">
-                    <button className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-[#09090b] border border-gray-200 dark:border-white/10 rounded-lg text-gray-700 dark:text-gray-300 font-semibold shadow-sm hover:bg-gray-50 dark:hover:bg-white/5 hover:border-gray-300 dark:hover:border-white/20 hover:text-gray-900 dark:hover:text-white transition-all">
-                        <Share2 size={16} />
-                        Share
-                    </button>
-                    <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold shadow-md shadow-indigo-600/20 dark:shadow-indigo-900 hover:bg-indigo-700 transition-all">
-                        <Bookmark size={16} className="fill-current" />
-                        Save
-                    </button>
-                </div>
-            </div>
-
             {/* Video Player Placeholder */}
             <div className="w-full max-w-5xl mx-auto mb-8 relative group cursor-pointer">
                 <div
