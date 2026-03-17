@@ -108,42 +108,6 @@ export default function MainContent({ onNotFound }) {
                 </div>
             </div>
 
-            {/* Content Tabs Section */}
-            <div className="w-full max-w-5xl mx-auto bg-white dark:bg-[#09090b] rounded-2xl border border-gray-100 dark:border-white/10 p-4 sm:p-6 md:p-8 shadow-sm">
-
-                {/* Tabs */}
-                <div className="flex items-center gap-4 sm:gap-6 md:gap-8 border-b border-gray-100 dark:border-white/10 mb-4 sm:mb-6 md:mb-8 pb-[-1px] overflow-x-auto">
-                    <button className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-bold border-b-2 border-indigo-600 dark:border-indigo-400 pb-4 px-2 -mb-[2px] z-10">
-                        <FileText size={18} />
-                        Overview
-                    </button>
-
-                    <button className="flex items-center gap-2 text-gray-500 dark:text-gray-400 font-medium pb-4 px-2 hover:text-gray-900 dark:hover:text-white transition-colors">
-                        <AlignLeft size={18} />
-                        Transcript
-                    </button>
-
-                    <button className="flex items-center gap-2 text-gray-500 dark:text-gray-400 font-medium pb-4 px-2 hover:text-gray-900 dark:hover:text-white transition-colors">
-                        <HelpCircle size={18} />
-                        Quizzes
-                        <span className="bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full ml-1 border border-indigo-100 dark:border-indigo-800">
-                            2
-                        </span>
-                    </button>
-                </div>
-
-                {/* Tab Content */}
-                <div>
-                    <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">About this lesson</h2>
-                    <p className="text-base text-gray-600 dark:text-gray-400 leading-relaxed max-w-3xl">
-                        In this lesson, we dive deep into the mathematics behind backpropagation, the
-                        core algorithm used to train neural networks. We'll cover the chain rule, gradient
-                        descent optimization, and how weights are updated layer by layer.
-                    </p>
-                </div>
-
-            </div>
-
         </main>
     );
 }
