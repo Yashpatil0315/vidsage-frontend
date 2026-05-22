@@ -17,6 +17,7 @@
   [![OpenAI](https://img.shields.io/badge/AI-Tutor-412991.svg?style=for-the-badge&logo=openai)](#)
 </div>
 
+[NOTE : This was my college project and its backend is very heavy so its deployed on the AWS server. If you want to run it you have the run it locally as server is stopped]
 ---
 
 ## 🚀 Overview
